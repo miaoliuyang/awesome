@@ -19,3 +19,5 @@ suspend=y/n 是否在调试客户端建立连接之后启动 VM 。
 
 还有一个细节是-jar参数不能写到-Xug参数前，像这样无法启用调试：
 java -jar lib/Main.jar -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y
+
+-Dserver.port  修改端口
