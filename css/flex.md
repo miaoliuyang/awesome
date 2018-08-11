@@ -11,6 +11,7 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
     #### flex-direction
     This establishes the main-axis, thus defining the direction flex items are placed in the flex container. Flexbox is (aside from optional wrapping) a single-direction layout concept. Think of flex items as primarily laying out either in horizontal rows or vertical columns.
+
     <img src="../image/css/flex-direction2.svg?sanitize=true"/>
 
     ```
@@ -21,7 +22,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
    
     #### flex-wrap
     By default, flex items will all try to fit onto one line. You can change that and allow the items to wrap as needed with this property.
+
     <img src="../image/css/flex-wrap.svg?sanitize=true"/>
+
     ```
     .container{
         flex-wrap: nowrap | wrap | wrap-reverse;
@@ -38,7 +41,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     ```
     #### justify-content
     This defines the alignment along the main axis. It helps distribute extra free space left over when either all the flex items on a line are inflexible, or are flexible but have reached their maximum size. It also exerts some control over the alignment of items when they overflow the line.
+
      <img src="../image/css/justify-content-2.svg?sanitize=true"/>
+
      ```
      .container {
         justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;
@@ -53,7 +58,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
     #### align-items
     This defines the default behaviour for how flex items are laid out along the cross axis on the current line. Think of it as the justify-content version for the cross-axis (perpendicular to the main-axis).
+
     <img src="../image/css/align-items.svg?sanitize=true"/>
+
     ```
     .container {
         align-items: flex-start | flex-end | center | baseline | stretch;
@@ -66,7 +73,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     ```
     #### align-content
     This aligns a flex container's lines within when there is extra space in the cross-axis, similar to how justify-content aligns individual items within the main-axis.
+
     <img src="../image/css/align-content.svg?sanitize=true"/>
+
     ```
     .container {
         align-content: flex-start | flex-end | center | space-between | space-around | stretch;
@@ -82,7 +91,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 2. Properties fro the Children
     #### order
     By default, flex items are laid out in the source order. However, the order property controls the order in which they appear in the flex container.
+
     <img src="../image/css/order-2.svg?sanitize=true"/>
+
     ```
     .item {
         order: <integer>; /* default is 0 */
@@ -93,7 +104,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     This defines the ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container the item should take up.
 
     If all items have flex-grow set to 1, the remaining space in the container will be distributed equally to all children. If one of the children has a value of 2, the remaining space would take up twice as much space as the others (or it will try to, at least).
+
     <img src="../image/css/flex-grow.svg?sanitize=true"/>
+
     ```
     .item {
         flex-grow: <number>; /* default 0 */
@@ -130,7 +143,9 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
     This allows the default alignment (or the one specified by align-items) to be overridden for individual flex items.
 
     Please see the align-items explanation to understand the available values.
+
      <img src="../image/css/align-self.svg?sanitize=true"/>
+     
     ```
     .item {
         align-self: auto | flex-start | flex-end | center | baseline | stretch;
