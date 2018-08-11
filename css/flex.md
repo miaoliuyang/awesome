@@ -2,7 +2,7 @@ https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
 https://www.youtube.com/watch?v=-Wlt8NRtOpo
 
-1. Properties fro the Parent
+1. Properties for the Parent
     # display
     This defines a flex container; inline or block depending on the given value. It enables a flex context for all its direct children.
     ```
@@ -92,7 +92,7 @@ https://www.youtube.com/watch?v=-Wlt8NRtOpo
    * space-around: lines evenly distributed with equal space around each line
    * stretch (default): lines stretch to take up the remaining space
 
-2. Properties fro the Children
+2. Properties for the Children
     # order
     By default, flex items are laid out in the source order. However, the order property controls the order in which they appear in the flex container.
 
