@@ -133,7 +133,7 @@ https://www.youtube.com/watch?v=-Wlt8NRtOpo
     If set to 0, the extra space around content isn't factored in. If set to auto, the extra space is distributed based on its flex-grow value
 
     https://www.w3.org/TR/css-flexbox-1/images/rel-vs-abs-flex.svg
-    
+
     # flex
     This is the shorthand for flex-grow, flex-shrink and flex-basis combined. The second and third parameters (flex-shrink and flex-basis) are optional. Default is 0 1 auto.
     ```
@@ -156,3 +156,20 @@ https://www.youtube.com/watch?v=-Wlt8NRtOpo
     }
     ```
     Note that float, clear and vertical-align have no effect on a flex item.
+
+
+# align-items与align-content区别
+
+1.  The align-items property applies to all flex containers, and sets the default alignment of the flex items along the cross axis of each flex line.
+
+    align-items属性适用于所有的flex容器，它是用来设置每个flex元素在侧轴上的默认对齐方式。
+
+    align-items has the same functionality as align-content but the difference is that it works to center every single-line Container instead of 
+centering the whole container.
+
+    align-items和align-content有相同的功能，不过不同点是它是用来让每一个单行的容器居中而不是让整个容器居中。
+
+2. The align-content property only applies to multi-line flex containers, and aligns the flex lines within the flex container when there is 
+extra space in the cross-axis.
+
+    align-content属性只适用于多行的flex容器，并且当侧轴上有多余空间使flex容器内的flex线对齐。
