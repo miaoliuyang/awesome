@@ -132,6 +132,8 @@ https://www.youtube.com/watch?v=-Wlt8NRtOpo
     ```
     If set to 0, the extra space around content isn't factored in. If set to auto, the extra space is distributed based on its flex-grow value
 
+    https://www.w3.org/TR/css-flexbox-1/images/rel-vs-abs-flex.svg
+    
     # flex
     This is the shorthand for flex-grow, flex-shrink and flex-basis combined. The second and third parameters (flex-shrink and flex-basis) are optional. Default is 0 1 auto.
     ```
