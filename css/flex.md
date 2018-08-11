@@ -1,5 +1,7 @@
 https://css-tricks.com/snippets/css/a-guide-to-flexbox/
 
+https://www.youtube.com/watch?v=-Wlt8NRtOpo
+
 1. Properties fro the Parent
     # display
     This defines a flex container; inline or block depending on the given value. It enables a flex context for all its direct children.
