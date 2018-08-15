@@ -3,6 +3,10 @@
    "build": "NODE_ENV='production' webpack -p"
    "build": "SET NODE_ENV='production' && webpack -p" //WINDOWS
    ```
+2. 修改react-scripts启动端口
+   ```
+    "start": "SET PORT=3001 && react-scripts start" //WINDOWS
+   ```
 2. webpack.config.js模板
    ```
     var path = require('path');
