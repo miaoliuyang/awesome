@@ -42,3 +42,17 @@
    })
    subscribe() // will subscribe
    ```
+   
+ 2. Actions
+ 
+    an action is an object which describes what sort of transformation you want to make to your state
+   
+    One thing to note is that actions must have a type property to specify, well, the “type” of action which is occurring. Other than ‘type’, the structure of the action is up to you.
+   
+   ```
+   const action = {
+      type: 'LIKE_TWEET',
+      id: 950788310443724800,
+      uid: 'tylermcginnis'
+    }
+   ```
