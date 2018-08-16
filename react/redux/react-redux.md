@@ -1,5 +1,7 @@
 
-1. Make state more predictable
+1. Store
+
+   **Make state more predictable**
    
    Benefits of State Tree?
    * Shared cache
