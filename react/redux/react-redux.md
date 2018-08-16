@@ -49,10 +49,10 @@
    
     One thing to note is that actions must have a type property to specify, well, the “type” of action which is occurring. Other than ‘type’, the structure of the action is up to you.
    
-   ```
-   const action = {
-      type: 'LIKE_TWEET',
-      id: 950788310443724800,
-      uid: 'tylermcginnis'
-    }
-   ```
+    ```
+     const action = {
+        type: 'LIKE_TWEET',
+        id: 950788310443724800,
+        uid: 'tylermcginnis'
+      }
+    ```
