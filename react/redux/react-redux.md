@@ -61,5 +61,17 @@
     The whole concept of a pure function is consistency and predictability.The reason for the consistency and predictability is because pure functions have the following characteristics.
      
     *  Pure functions always return the same result given the same arguments. 
-    *  Pure function's execution doesn't depend on the state of the application.
-    *  Pure functions don't modify the variables outside of their scope.
+    *  Pure function's execution doesn't depend on the state of the application. They depend only on the arguments passed into them
+    *  Pure functions don't modify the variables outside of their scope. Never produce any side effects
+    
+ 4. Reducer Function
+ 
+    ```
+      function todso(state = [], action){
+          if(action.type === 'ADD_TODO'){
+              return state.concat([action.todo])
+          }
+          
+          return state
+      }
+    ```
