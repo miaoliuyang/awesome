@@ -75,3 +75,6 @@
           return state
       }
     ```
+ 5. Combining Reducers
+ 
+ 6. Action Creators
