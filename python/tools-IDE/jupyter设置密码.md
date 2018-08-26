@@ -1,4 +1,6 @@
 
+安装anaconda后，然后在电脑->右键选择属性->高级系统设置->环境变量->系统变量->path中加入anaconda安装的目录以及anaconda安装目录下的Scripts目录(去掉之前设置的python的目录)
+
 * 进行python 
    ```
    from notebook.auth import passwd
