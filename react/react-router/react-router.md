@@ -1,4 +1,7 @@
 
+
+### Pass props to a component rendered
+
 ### Programmatically navigate
 
 1) using a <Redireact /> componenet
@@ -14,3 +17,18 @@ Now, what if the Register component wasn’t being rendered by React Router? (Me
 ### Query Strings support
 
 using **this.props.location.search** to get the  query string, such as "?filter=top&origin=im". and then can use the library  query-string to parse it 
+
+### Handling 404 pages (catch all routes) 
+
+by using Switch. All we need to do is wrap our Routes inside of a Switch then just as we wanted, only the first match will ever be rendered.
+
+By using Redirect changing the route
+
+```
+     <Switch>
+        <Route path="/" exact component={Home}/>
+        <Route path="/will-match" component={WillMatch}/>
+        <Redirect from='/old-match' to='/will-match' />
+        <Route component={NoMatch} />
+      </Switch>
+```
