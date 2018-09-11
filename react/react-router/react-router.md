@@ -1,8 +1,17 @@
 
 
-### Pass props to a component rendered
+### 1. Pass props to a component rendered
 
-### Programmatically navigate
+if you need to pass a prop to a component being rendered by React Router, instead of using Routes component prop, use its render prop passing it an inline function then pass along the arguments to the element you’re creating.
+
+```
+     <Route
+       path='/dashboard'
+       render={(props) => <Dashboard {...props} isAuthed={true} />}
+     />
+```
+
+### 2. Programmatically navigate
 
 1) using a <Redireact /> componenet
 
@@ -14,11 +23,11 @@ When a component is rendered by React Router, that component is passed three dif
 
 Now, what if the Register component wasn’t being rendered by React Router? (Meaning, we’re not passing Register as a component prop to a Route. Instead, we’re just rendering it ourselves like <Register />). If it’s not rendered by React Router, then we won’t have access to history.push. The team thought of this use case so React Router comes with a handy HOC called **withRouter**. 
 
-### Query Strings support
+### 3. Query Strings support
 
 using **this.props.location.search** to get the  query string, such as "?filter=top&origin=im". and then can use the library  query-string to parse it 
 
-### Handling 404 pages (catch all routes) 
+### 4. Handling 404 pages (catch all routes) 
 
 by using Switch. All we need to do is wrap our Routes inside of a Switch then just as we wanted, only the first match will ever be rendered.
 
@@ -31,4 +40,16 @@ By using Redirect changing the route
         <Redirect from='/old-match' to='/will-match' />
         <Route component={NoMatch} />
       </Switch>
+```
+
+### 5. Ambiguous Matches
+
+By placing all of your <Route>s inside of a Switch component, React Router guarantees that it’ll only render the first match. This means that by wrapping all the routes in a Switch and by placing the dynamic route last, React Router will only render the dynamic route if the other static routes don’t match.
+
+```
+     <Switch>
+       <Route path='/' component={Home} />
+       <Route path='/notifications' component={Notifications} />
+       <Route path='/:handle' component={Profile} />
+     </Switch>
 ```
