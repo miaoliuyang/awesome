@@ -53,3 +53,18 @@ By placing all of your <Route>s inside of a Switch component, React Router guara
        <Route path='/:handle' component={Profile} />
      </Switch>
 ```
+
+### 6. Pass props to React Router's Link component
+
+There are two different ways to pass data from a Link component through to the new route that’s being rendered. The first is through URL Parameters and the second is through state.
+
+```
+     <Link to={{
+       pathname: '/tylermcginnis',
+       state: {
+         fromNotifications: true
+       }
+     }}>Tyler McGinnis</Link>
+```
+
+Now, the component that’s being rendered for that route (in this case, Profile) would be able to access fromNotifications by accessing **props.location.state**.
