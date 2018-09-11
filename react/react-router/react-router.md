@@ -56,7 +56,7 @@ By placing all of your <Route>s inside of a Switch component, React Router guara
 
 ### 6. Pass props to React Router's Link component
 
-There are two different ways to pass data from a Link component through to the new route that’s being rendered. The first is through URL Parameters and the second is through state.
+There are two different ways to pass data from a Link component through to the new route that’s being rendered. The first is through URL Parameters(**props.match.params**) and the second is through state(**props.location.state**).
 
 ```
      <Link to={{
