@@ -68,3 +68,42 @@ There are two different ways to pass data from a Link component through to the n
 ```
 
 Now, the component that’s being rendered for that route (in this case, Profile) would be able to access fromNotifications by accessing **props.location.state**.
+
+### 7. Rendering a Sidebar or Breadcrumbs 
+
+A common UI pattern is to have a sidebar or breadcrumb navbar in your app. Because React Router allows you to render and match more than one Route per page, implementing this pattern is pretty straight forward. The goal of this post is to show how you can, by rendering multiple Routes, render separate components at separate parts of your page based on the path (like a sidebar).
+
+### 8. Customizing your own Link component
+
+```
+     const OldSchoolMenuLink = ({ children, to, exact }) => (
+       <Route path={to} exact={exact} children={({ match }) => (
+         <div className={match ? 'active' : ''}>
+           {match ? '> ' : ''}
+           <Link to={to}>
+             {children}
+           </Link>
+         </div>
+       )}/>
+     )
+     
+     render() {
+       return (
+         <Router>
+           <div>
+             <OldSchoolMenuLink exact={true} to="/">
+               Home
+             </OldSchoolMenuLink>
+             <OldSchoolMenuLink to="/about">
+               About
+             </OldSchoolMenuLink>
+
+             <hr/>
+
+             <Route exact path="/" component={Home}/>
+             <Route path="/about" component={About}/>
+           </div>
+         </Router>
+       )
+     }
+```
