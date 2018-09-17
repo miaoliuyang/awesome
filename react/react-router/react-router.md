@@ -112,7 +112,17 @@ A common UI pattern is to have a sidebar or breadcrumb navbar in your app. Becau
 
 react-transition-group  TransitionGroup and CSSTranstion
 
-TransitionGroup.Defined, it’s a “state machine for managing the mounting and unmounting of components over time”. In practice, the first thing it does is it keeps track of all of its children (props.children) inside of its local state. Then, whenever its props change and its componentWillReceiveProps is called, it loops over the next children and figures out which are new (entering), which have been deleted (exiting), and which children have stayed the same. Once its figured that out, it clones and merges all of its children together passing to each item a few props which represent its status (exiting, entering, etc). At this point it updates its local state with all of the merged children (which all individually know if they’re entering, exiting, or remaining the same). That causes a re-render and the new merged children are shown to the view.
+The first thing we need to do is take a look into how React Transition Group works. Like React Router, it has a component based API. The two components we’ll be using from it are TransitionGroup and CSSTransition.
+
+First, let’s look at TransitionGroup. The way you use TransitionGroup is as a wrapper component.
+
+```
+<TransitionGroup>
+  {/* stuff */}
+</TransitionGroup>
+```
+
+Defined, it’s a “state machine for managing the mounting and unmounting of components over time”. In practice, the first thing it does is it keeps track of all of its children (props.children) inside of its local state. Then, whenever its props change and its componentWillReceiveProps is called, it loops over the next children and figures out which are new (entering), which have been deleted (exiting), and which children have stayed the same. Once its figured that out, it clones and merges all of its children together passing to each item a few props which represent its status (exiting, entering, etc). At this point it updates its local state with all of the merged children (which all individually know if they’re entering, exiting, or remaining the same). That causes a re-render and the new merged children are shown to the view.
 
 That was a lot of words to say that TransitionGroup renders all its new and old children after passing certian props to each based on if they’re new, old, or the same.
 
@@ -144,6 +154,7 @@ Remember earlier when we talked about how TransitionGroup keeps track of its chi
 
 Now the question is, what should we use for a unique key? Well, what is the thing that is changing in the app? It’s the app’s location. So ideally, we would use that as the key since we know if the location changed, we’d want TransitionGroup to be aware of that and let CSSTransition know. Now we have another problem 😣. How do we get the app’s location? We could reach out to window.location but that feels hacky since we’re using React Router. There are a few different ways to accomplish this with React Router. We could use the withRouter HOC would would give us access to location as well as the other router props (history and match). What we’ll do in this tutorial though is render a Route without a path and use a render prop. Now that may seem weird, but if you render a Route without a path, that route will always match and, like usual, the render prop will be passed location, match, and history.
 
+Notice that eventually CSSTransition is rendering our Switch component. That makes sense. You’ll also notice that the images are the exact same except for the key props. This isnt’ good and it’s the reason it’s not working.
 
 Take a closer look at the Switch components in the images above. Notice that both of them have the exact same location prop. We don’t want that to happen. Remember the purpose of Switch is to render the component of the first Route that matches. If the location prop is the same on both Switch components, that means that the same Route is going to match in both Switches which means the same component is going to be rendered. This means that even if the animations are occurring, we’re not going to see them since both components being rendered are the same. What we need to do is figure out why the locations are the same, and how to fix them. The goal here is to make it so when TransitionGroup renders its children, the old child has the previous location while the new child has the new location. Right now, they both just have the new location.
 
@@ -292,7 +303,7 @@ styles.rgb  = {
 export default App
 ```
 
-Wrap your Switch component inside of both TransitionGroup and CSSTransition, pass the location’s key to CSSTransition and pass the location to Switch.
+**Wrap your Switch component inside of both TransitionGroup and CSSTransition, pass the location’s key to CSSTransition and pass the location to Switch.**
 
 
 
