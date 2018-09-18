@@ -305,5 +305,29 @@ export default App
 
 **Wrap your Switch component inside of both TransitionGroup and CSSTransition, pass the location’s key to CSSTransition and pass the location to Switch.**
 
+### 10. Code Splittint
+
+```
+class DynamicImport extends Component {
+  state = {
+    component: null
+  }
+  componentDidMount () {
+    this.props.load()
+      .then((component) => {
+        this.setState(() => ({
+          component: component.default ? component.default : component
+        }))
+      })
+  }
+  render() {
+    return this.props.children(this.state.component)
+  }
+}
+
+```
+
+react-loadable
+
 
 
