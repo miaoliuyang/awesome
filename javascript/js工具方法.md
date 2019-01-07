@@ -118,3 +118,40 @@ var capitalize = cached(function(str){
   return str.charAt(0).toUpperCase() + str.slice(1)
 });
 ```
+10.  Simple bind polyfill for environments that do not support it
+```
+function polyfillBind (fn, ctx) {
+    function boundFn (a) {
+      var l = arguments.length;
+      return l
+        ? l > 1
+          ? fn.apply(ctx, arguments)
+          : fn.call(ctx, a)
+        : fn.call(ctx)
+    }
+
+    boundFn._length = fn.length;
+    return boundFn
+  }
+
+function nativeBind (fn, ctx) {
+  return fn.bind(ctx)
+}
+
+var bind = Function.prototype.bind
+  ? nativeBind
+  : polyfillBind;
+```
+11. Convert an Array-like object to a real Array
+```
+function toArray(list, start) {
+  start = start || 0;
+  var i = list.length - start;
+  var ret = new Array(i);
+  while(i--){
+    ret[i] = list[i + start];
+  }
+  return ret
+}
+```
+
