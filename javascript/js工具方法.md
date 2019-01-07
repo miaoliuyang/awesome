@@ -51,10 +51,10 @@ function isRegExp (v) {
 
 3. 判断是否是有效的array index
 ```
-  function isValidArrayIndex (val) {
+function isValidArrayIndex (val) {
     var n = parseFloat(String(val));
     return n >= 0 && Math.floor(n) === n && isFinite(val)
-  }
+}
 ```
 
 4.  Convert a value to a string that is actually rendered.
@@ -96,3 +96,25 @@ function remove(arr, item) {
 }
 ```
 
+8. Check whether an object has the property
+```
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+function hasOwn(obj ,key){
+   return hasOwnProperty.call(obj, key)
+}
+```
+
+9.  Create a cached version of a pure function
+```
+function cached(fn) {
+  var cache = Object.create(null);
+  return (function cachedFn(str) {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str))
+  })
+}
+
+var capitalize = cached(function(str){
+  return str.charAt(0).toUpperCase() + str.slice(1)
+});
+```
