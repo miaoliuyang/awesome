@@ -44,6 +44,55 @@ function isPlainObject(obj){
   return _toString.call(obj) === '[object Object]'
 }
 
-71Line
+function isRegExp (v) {
+    return _toString.call(v) === '[object RegExp]'
+}
+```
+
+3. 判断是否是有效的array index
+```
+  function isValidArrayIndex (val) {
+    var n = parseFloat(String(val));
+    return n >= 0 && Math.floor(n) === n && isFinite(val)
+  }
+```
+
+4.  Convert a value to a string that is actually rendered.
+```
+function toString(val) {
+  return val == null ? '' : typeof val === 'object' ? JSON.stringify(val,null,2): String(val)
+}
+```
+
+5. Convert an input value to a number for persistence.If the conversion fails, return original string.
+```
+function toNumber(val) {
+  val n = parseFloat(val);
+  return isNaN(n) ? val : n
+}
+```
+
+6. Make a map and return a function for checking if a key is in that map.
+```
+function makeMap(str, expectLowerCase) {
+  var map = Object.create(null);
+  var list = str.split(',');
+  for(var i = 0; i < list.length; i++){
+    map[list[i]] = true;
+  }
+  return expectLowerCase ? function(val) { return map[val.toLowerCase()]; } : function(val) { return map[val];}
+}
+```
+
+7. Remove an item from an array
+```
+function remove(arr, item) {
+  if(arr.length){
+    var index = arr.indexOf(item);
+    if (index > -1){
+      return arr.splice(index, 1)
+    }
+  }
+}
 ```
 
