@@ -7,7 +7,27 @@ https://www.youtube.com/watch?v=cCOL7MC4Pl0
 
 https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/?utm_source=html5weekly
 
-
+- task流程
 ![](1.PNG)
-
 ![](2.PNG)
+![](3.PNG)
+![](6.PNG)
+![](4.PNG)
+	**UI Rendering比其他task 优先级更高**
+![](5.PNG)
+	**web apis是由浏览器提供的，javascript中并没有这些**
+
+- 增加microtask之后的流程如下：
+![](7.PNG)
+![](8.PNG)
+![](9.PNG)
+![](10.PNG)
+
+- 增加浏览器render之后的流程如下：
+![](11.PNG)
+	**60frames per second。一秒执行60次render。浏览器使用CPU进行render操作，只有部分操作，比如3D 动画由GPU执行**
+![](12.PNG)
+![](13.PNG)
+![](14.PNG)
+	**RAF--requestAnimationFrame**
+    **render优先级较其他task高，当该执行render操作时，会将render插入到task queue头部，但是是在microtask之后**
