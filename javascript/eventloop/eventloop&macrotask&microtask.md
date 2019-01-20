@@ -31,3 +31,12 @@ https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/?utm_source
 ![](14.PNG)
 	**RAF--requestAnimationFrame**
     **render优先级较其他task高，当该执行render操作时，会将render插入到task queue头部，但是是在microtask之后**
+    
+![](15.PNG)
+![](16.PNG)
+![](17.PNG)
+   **一次event loop中，只会执行一个task item。执行完之后，循环执行microtasks中的所有microtask,直至所有的microtask执行完，在执行过程中新增的microtask，也会在此次loop中执行。如果到达render执行时间，取出当前的所有的animation calbacks然后依次执行。执行过程中新增的animation calbacks,需要在下次render时执行，此执行过程同图11的逻辑**
+   
+- multiple event loop：
+![](18.PNG)
+![](19.PNG)
