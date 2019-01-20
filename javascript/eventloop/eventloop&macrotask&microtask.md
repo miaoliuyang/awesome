@@ -8,3 +8,6 @@ https://www.youtube.com/watch?v=cCOL7MC4Pl0
 https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/?utm_source=html5weekly
 
 
+![](1.PNG)
+
+![](2.PNG)
