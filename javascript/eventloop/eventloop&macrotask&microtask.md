@@ -45,4 +45,6 @@ https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/?utm_source
 
 https://segmentfault.com/a/1190000013212944
 
+https://segmentfault.com/a/1190000012646373
+
 **根据HTML Standard，一轮事件循环执行结束之后，下轮事件循环执行之前开始进行UI render。即：macro-task任务执行完毕，接着执行完所有的micro-task任务后，此时本轮循环结束，开始执行UI render。UI render完毕之后接着下一轮循环。**
