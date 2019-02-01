@@ -1,5 +1,5 @@
 #### 3.1 块级元素 block-level element
-1. "块级元素"和"diplay为block元素"不是一个概念, 例如```<li>```元素默认的display值是list-item,```<table>```元素默认的display值是table,但它们都是"块级元素",都复合块级元素的基本特征,即一个水平流上只能单独显示一个元素,多个块级元素则换行显示。
+1."块级元素"和"diplay为block元素"不是一个概念, 例如```<li>```元素默认的display值是list-item,```<table>```元素默认的display值是table,但它们都是"块级元素",都复合块级元素的基本特征,即一个水平流上只能单独显示一个元素,多个块级元素则换行显示。
 ```
 配合clear属性清除浮动影响 https://demo.cssworld.cn/3/1-1.php
 .clear:after{
@@ -8,11 +8,10 @@
     clear:both
 }
 ```
-2. 每个元素都有两个盒子,外在盒子
 
+2.每个元素都有两个盒子,外在盒子
 #### 3.2 width/height作用的具体细节
 ##### 3.2.1 深藏不露的width:auto
-
 width的默认值是auto,它至少包含了以下4种不同的宽度表现:
 - 充分利用可用空间。比方说```<div>```和```<p>```这些元素的宽度默认是100%于父级容器的。这种充分利用可用空间的行为还有个专有名字fill-available
 - 收缩与包裹。典型代表就是浮动,绝对定位,inline-block元素或table元素,英文称为shrink-to-fit。CSS3中的fit-content指的就是这种宽度表现。
@@ -21,11 +20,13 @@ width的默认值是auto,它至少包含了以下4种不同的宽度表现:
 
 在CSS世界中,尺寸也分"内部尺寸"和"外部尺寸", 其中"内部尺寸"英文写作Intrinsic Sizing 表示尺寸由内部尺寸决定,"外部尺寸"英文写作Extrinsic Sizing,宽度由外部元素决定。上面4种尺寸表现中,第一个是"外部尺寸",其余的全部是"内部尺寸"。
 
-1. 外部尺寸与流体特性
+1.外部尺寸与流体特性
 (1) 正常流宽度
 所谓流动性，并不是看不去的宽度100%显示那么简单,而是一种margin/border/padding和content内容区域自动分配水平空间的机制。 https://demo.cssworld.cn/3/2-3.php  这个例子中上下两个导航均有margin和padding,前者无width设置,完全借助流特性,后者宽度width:100%。结果后面的尺寸超出了外部的容器,即所谓的"流动性丢失"。
+
 (2) 格式化宽度
 格式化宽度仅出现在"绝对定位模型"中,即position属性值为absolute或fixed的元素中。在默认情况下,绝对定位元素的宽度表现为"包裹性",宽度由内部尺寸决定。但有一种情况其宽度是由外部尺寸决定的。
+
 对于非替换元素,当left/top或top/bottom对立方位的属性值同时存在的时候,元素的宽度表现为"格式化宽度",其宽度大小相对于最近的具有定位特性(position的属性值不是static)的祖先元素计算。
 ```
 div{position:absolute; left:20px; width:20px}
@@ -33,10 +34,71 @@ div{position:absolute; left:20px; width:20px}
 假设该元素最近的具有定位特性的祖先元素的宽度是1000像素,则这个元素的宽度是1000-20-20=960像素。
 "格式化宽度"具有完全的流动性,也就是margin,border,padding和content内容区域同样会自动分配水平(和垂直)空间。
 
-2. 内部尺寸与流体特性
+2.内部尺寸与流体特性
 在CSS世界中,"内部尺寸"有下面3种表现形式:
 (1) 包裹性(shrink-to-fit):
 "包裹性"除了"包裹",还有"自适应性"。所谓"自适应性"指的是元素尺寸有内部元素决定,但永远小于"包含块"容器的尺寸(除非容器尺寸小于元素的"首选最小宽度")。
-因此对于一个元素,如果其display属性值是inline-block
 
+因此对于一个元素,如果其display属性值是inline-block,那么即使其里面内容再多,只要是正常文本,宽度也不会超过容器。于是,图文混排的时候,我们只要关心内容,除非"首选最小宽度"比容器宽度还要大,否则我们完全不需要担心某个元素内容太多而破坏了布局。
+
+按钮就是css世界中极具代表性的inline-block元素,其"包裹性"表现为:按钮文字越多宽度越宽(内部尺寸特性),但如果文字足够多,则会在容器的宽度处自动换行(自适应特性) https://demo.cssworld.cn/3/2-4.php
+
+```<button>```标签按钮才会自动换行,```<input>```标签按钮默认white-space:pre是不会换行的,需要将pre值重置为默认的normal。
+
+"包裹性"的应用场景: 页面某个模块的文字内容是动态的,希望文字少的时候居中显示,文字超过一行的时候居左显示。https://demo.cssworld.cn/3/2-5.php
+
+除了inline-block元素,浮动元素以及绝对定位元素都具有包裹性,均有类似的只能宽度行为。
+
+(2) 首选最小宽度
+所谓"首选最小宽度"指的是元素最适合的最小宽度。 具体表现如下:
+- 东亚文字(如中文)最小宽度为每个汉字的宽度
+- 西方文字最小宽度由特定的连续的英文字符单元决定。并不是所有的英文字符都会组成连续单元,一般会终止于空格(普通空格),短横线,问号以及其他非英文字符等。如display:inline-block这几个字符以连接符-作为分隔符,形成了display:inline和block两个连续单元,由于连接符-分隔位置在字符后面,因此最后的宽度就是display:inline-的宽度。
+
+如果想让英文字符和中文一样,每一个字符都用最小宽度单元,可以使用word-break:break-all
+
+(3)最大宽度
+"最大宽度"实际等同于"包裹性"元素设置white-space:nowrap声明后的宽度。如果内部没有块级元素或者块级元素没有设定宽度值,则"最大宽度"实际上是最大的连续内联盒子的宽度。"连续内联盒子"指的是全部都是内联级别的一个或一堆元素,中间没有任何的换行标签```<br>```或其他块级元素。
+
+##### 3.2.2 width值作用的细节
+"内在盒子"的4个盒子content box,padding box,border box,margin box 默认情况下width是作用在content box
+
+##### 3.2.3 CSS流体布局下的宽度分离原则
+所谓"宽度分离原则",就是css中的width属性不与影响宽度的padding/border(有时候包括margin)属性并存,也就是不能出现以下的组合:
+```
+.box{ width: 100px; border: 1px soild;}
+.box{ width: 100px; padding: 20px; }
+```
+width独立占用一层标签,而padding,border,margin利用流动性在内部自适应呈现
+```
+.father{ width: 180px;}
+.son{ margin:0 20px; padding:20px; border: 1px solid;}
+```
+
+如果不考虑替换元素,这世界上绝大多数的网页,只需要一个width设定就可以了。只需要一个width就是最外层限制网页主体内容宽度的那个width,而里面所有元素都没有理由再出现width设置。所以"宽度分离"虽然多了一层标签,但最终也就多了一层标签而已。
+
+##### 3.2.4 改变width/height作用细节的box-sizing
+在css世界中,唯一离不开box-sizing:border-box的就是原生普通文本框```<input>```和文本域```<textarea>```的100%自适应父容器宽度。
+
+```<textarea>```为替换元素,替换元素的特性之一就是尺寸由内部元素决定,且无论其display属性是inline还是block。对于非替换元素,如果其display属性值为block,则会具有流动性,宽度由外部尺寸决定,但是替换元素的宽度却不受display水平影响。因此通过css修改```<textarea>```的display水平是无法让尺寸100%自使用父容器的。所以只能通过width设定让```<textarea>```尺寸100%自适应父容器。但是```<textarea>```是有border的,而且需要有一定的padding大小,否则输入的时候光标会顶到边框,体验不好。于是width/border和padding注定要共存,同时还要整体宽度100%自适应容器.使用box-sizing:border-box是解决之道。
+
+box-sizing:border-box可用来解决替换元素宽度自适应问题。
+
+##### 3.2.5 相对简单而单纯的height:auto
+height:auto也有外部尺寸特性,但其仅存在于绝对定位模型中,也就是"格式化高度",与"格式化宽度"类似。
+
+##### 3.2.6 关于height:100%
+对于width属性,就算父元素width为auto,其百分比值也是支持的;但是height属性,如果父元素height为auto,只要子元素在文档流中,其百分比值完全就被忽略了。
+
+对于普通文档流中的元素,百分比高度值要想起作用,其父级必须有一个可以生效的高度值。
+
+让元素支持height:100%效果
+(1)设定显示的高度值
+```
+html,body{ height: 100%; }
+```
+(2)使用绝对定位
+```
+div{ height: 100%; position: absolute;}
+```
+此时height:100%就会有计算值,即使祖先元素的height计算为auto也是如此。绝对定位元素的百分比计算和非绝对定位元素的百分比计算是有区别的：绝对定位的宽高百分比计算是相对于padding box的,也就是说会把padding大小值计算在内,但是非绝对定位元素则是相对于content box计算的。https://demo.cssworld.cn/3/2-11.php 
 #### 3.3 内联元素 inline element/inline-level element
