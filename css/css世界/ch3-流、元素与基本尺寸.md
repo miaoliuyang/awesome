@@ -29,7 +29,7 @@ width的默认值是auto,它至少包含了以下4种不同的宽度表现:
 
 对于非替换元素,当left/top或top/bottom对立方位的属性值同时存在的时候,元素的宽度表现为"格式化宽度",其宽度大小相对于最近的具有定位特性(position的属性值不是static)的祖先元素计算。
 ```
-div{position:absolute; left:20px; width:20px}
+div{position:absolute; left:20px; right:20px}
 ```
 假设该元素最近的具有定位特性的祖先元素的宽度是1000像素,则这个元素的宽度是1000-20-20=960像素。
 "格式化宽度"具有完全的流动性,也就是margin,border,padding和content内容区域同样会自动分配水平(和垂直)空间。
@@ -101,4 +101,76 @@ html,body{ height: 100%; }
 div{ height: 100%; position: absolute;}
 ```
 此时height:100%就会有计算值,即使祖先元素的height计算为auto也是如此。绝对定位元素的百分比计算和非绝对定位元素的百分比计算是有区别的：绝对定位的宽高百分比计算是相对于padding box的,也就是说会把padding大小值计算在内,但是非绝对定位元素则是相对于content box计算的。https://demo.cssworld.cn/3/2-11.php 
-#### 3.3 内联元素 inline element/inline-level element
+
+#### 3.3 min-width/max-width和min-height/max-height
+##### 3.3.1 为流体而生的min-width/max-width
+```
+img{ max-width: 100%; height:auto!important;}
+```
+height:auto是必需的,否则,如果原始图片有设定height,max-width生效的时候图片就会被水平压缩.强制height:auto可以确定宽度不超出的同时使图片保持原来的比例。但这样也会有体验上的问题,那就是在加载时图片占据高度会从0变成计算高度,图文会有明显的瀑布式下落。
+
+##### 3.3.2 与众不同的初始值
+max-width和max-height的初始值是none,min-width和min-height的初始值是auto
+
+##### 3.3.3 超越！important,超越最大
+1.max-width会覆盖width,而且这种覆盖不是普通的覆盖,是超级覆盖
+```
+<img src="1.jpg" style="width: 480px!important">
+img{ max-width: 256px; }
+```
+上面的设置后图片最后呈现的宽度是256px
+
+2.min-width会覆盖max-width,此规则发生在min-width和max-width冲突的时候
+```
+.container{ min-width: 1400px; max-width: 1200px}
+```
+上面的设置后.container元素表现为至少1400像素宽。
+
+#### 3.4 内联元素
+##### 3.4.1 哪些元素是内联元素
+1.从定义看
+"内联元素"的"内联"特指"外在盒子",和"display为inline的元素"不是一个概念,inline-block和inline-table都是"内联元素",因为它们的"外在盒子"都是内联盒子。
+
+2.从表现看
+##### 3.4.2 内联盒模型
+```
+<p>这是一行普通的文字,这里有个<em>em</em>标签.</p>
+```
+上面的一段html包含了很多个盒子：
+1.内容区域(content area)
+内容区域指一种围绕文字看不见的盒子,其大小仅受字符本身特性控制,本质上是一个字符盒子(character box)但是有些元素,如图片这样的替换元素,其内容显然不是文字,不存在字符盒子之类的,因此对于这些元素,内容区域可以看成元素自身。可以把文本选中时的背景色区域作为内容区域。
+
+文本选中区本质上就等同于基本盒尺寸中的content box。实际上,内容区域并没有明确的定义,所以将其理解为em盒(em-box,可看成是中文字符占据的1em高度区域)也是可以的。
+
+在IE和Firefox浏览器下,文本的选中背景总能准确反映内容区域范围,但是Chrome浏览器下,::selection范围并不总是准确的,例如,和图文混排或者有垂直padding的时候，范围会明显过大。
+
+2.内联盒子(inline box)
+"内联盒子"不会让内容成块显示,而是排成一行,这里的"内联盒子"实际指的是元素的"外在盒子",用来决定元素是内联还是块级。该盒子又可以细分为"内联盒子"和"匿名内联盒子"两类。
+
+如果外部包含内联标签```<span> <a>和<em>```则属于"内联盒子",如果是光秃秃的文字，则属于"匿名内联盒子"。需要注意的是,并不是所有光秃秃的文字都是"匿名内联盒子",其还有可能是"匿名块级盒子",关键要看前后的标签是内联还是块级。
+
+3.行框盒子(line box)
+每一行就是一个"行框盒子",每个"行框盒子"又由一个个"内联盒子"组成的。
+
+4.包含盒子(containing box/containing block)
+包含盒子由一行一行的"行框盒子"组成。在CSS规范中,并没有"包含盒子"的说法,更准确的称呼应该是"包含块"(containing block)。
+
+##### 3.4.3 幽灵空白节点
+"幽灵空白节点"是内联盒模型中非常重要的一个概念。具体指的是:在HTML5文档声明中,内联元素的所有解析和渲染表现就如同每个行框盒子的前面有一个"空白节点"一样。这个"空白节点"永远透明,不占据任何宽度,看不见也无法通过脚本获取,就好像幽灵一样,但又确确实实存在,表现如同文本节点一样。
+
+注意,这里有一个前提,文档声明必须是HTML5文档声明```<!doctype html>```否则不存在"幽灵空白节点"
+
+```
+div{ background-color: #cd0000;}
+span{ display: inline-block; }
+
+<div><span></span></div>
+```
+结果,此```<div>```的高度并不是0。但内部的```<span>```元素的宽高明明是0。作祟的就是这里的"幽灵空白节点",再加上line-height和vertical-align的共同作用导致```<div>```的高度不是0。
+
+"幽灵空白节点"实际上也是一个盒子,"strut",是一个存在于每个"行框盒子"前面,同时具有该元素的字体和行高属性的0宽度的内联盒。
+
+Each line box starts with a zero-width inline box with the element's font and line height properties.We call that imaginary box a "strut"
+
+Line boxes are created as needed to hold inline-level content within an inline formating context.Line boxes that contain no text,no preseved white space,no inline elements with none-zero margins,padding or borders,and no other in-flow content(such as images，inline blocks or inline-tables),and do not end with a preseved newline must be treated as zero-height line boxed for the purposes of determing the positions of any elements inside of them,and must be treated as not existing for any other purpose.
+如果一个line box里没有文字,保留的空格,非0的margin或padding或border的inline元素,或其他的in-flow内容(比如文字,inline-block或inline-table元素)且不以保留的换行符结束的话。就会被视作高度为0的line box。
