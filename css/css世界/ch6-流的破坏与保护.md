@@ -208,3 +208,55 @@ http://demo.cssworld.cn/6/2-1.php
 由于clear:both的作用本质是让自己不和float元素在一行显示,并不是真正意义上的清除浮动,因此float元素一些不好的特性依然存在,也是会有类似下面的现象。
 (1)如果clear:both元素前面的元素就是float元素,则margin-top负值即使设成-9999px,也不见任何效果。
 (2)clear:both后面的元素依旧可能会发生文字环绕的现象。
+
+#### 6.3 CSS世界的结界---BFC
+##### 6.3.1 BFC的定义
+BFC全称为block formatting context,中文为"块级格式化上下文"。如果一个元素具有BFC,内部子元素再怎么翻江倒海,都不会影响外部的元素。所以BFC元素是不可能发生margin重叠的,因为margin重叠是会影响外面的元素的,BFC原来也可以用来清除浮动的影响,因为如果不清楚,子元素浮动则父元素高度坍塌,必然会影响后面元素布局和定位,这显然有违BFC元素的子元素不会影响外部元素的设定。
+
+如下场景会触发BFC:
+- html根元素
+- float的值不为none
+- overflow的值为auto scroll或hidden
+- display的值为table-cell table-caption和inline-block中的任何一个
+- position的值不为relative和static
+
+只要元素符合上面任意一个条件,就无须使用clear:both属性来清除浮动的影响了。因此不要见到一个div元素就加个类似.clearfix的类名。
+
+##### 6.3.2 BFC与流体布局
+BFC的结界特性更重要的用途其实不是去margin重叠或者是清除float的影响,而是实现更健壮,更智能的自适应布局。
+```
+<div class="father">
+    <img src="1.jpg">
+    <p class="animal">小猫1
+</div>
+img {float: left;}
+```
+如果给.animal元素设置具有BFC特性的属性,如overflow:hidden。则根据BFC的表现原则,具有BFC特性的元素的子元素不会受外部元素影响,也不会影响外部元素。于是这里的.animal元素为了不和浮动元素产生任何交集,顺着浮动边缘形成自己的封闭上下文。
+
+普通流体元素在设置了overflow:hidden之后会自动填满容器中除了浮动元素以外的的剩余空间,形成自适应布局效果,而且这种自适应布局比纯流体自适应更加智能。比如让图片尺寸变大或变小,右侧自适应内容无效更改任何样式代码,都可以自动填满剩余的空间。
+
+实际项目开发的时候,图片和文字会保持合适的间距。如果元素是左浮动,则浮动元素可以设置margin-right或透明border-right或padding-right;或者右侧BFC元素设置成透明border-left或padding-left,但不包括margin-left。因为如果要使用margin-left,则其值必须是浮动元素的宽度间隙大小就变成动态不可控了,无法大规模复用。假设希望间隙是10px,则下面这几种写法都是可以的。
+- img{margin-right: 10px;}
+- img{border-right: 10px solid transparent;}
+- img{padding-right: 10px;}
+- .animal{border-left: 10px solid transparent;}
+- .animal{padding-left: 10px;}
+
+#### 6.4 最佳结界overflow
+要想彻底清除浮动的影响,最合适的属性不是clear而是overflow。一般使用overflow:hidden利用BFC的"结界"特性彻底解决浮动对外部或兄弟元素的影响。有很多其他CSS声明也能清除浮动,但基本上都会让元素的宽度变现为"包裹性",而overflow:hidden声明不会影响元素原先的流体特性或宽度变现。
+
+###### 6.4.1 overflow剪裁界线border box
+一个设置了overflow:hidden声明的元素,假设同时存在border属性和padding属性,类似如下CSS代码
+```
+.box{
+    width:200px;height:800px;
+    padding:10px;
+    border:10px solid;
+    overflow:hidden;
+}
+```
+则当子元素内容超出容器宽度高度限制的时候,裁剪的边界是border box的内边缘,而非padding box的内边缘。http://demo.cssworld.cn/6/4-1.php
+
+如果想实现元素裁剪同时四周留有间隙的效果的话,可以试试使用透明边框,此时内间距padding属性是无能无力的。
+
+overflow属性的一个不兼容问题: chrome浏览器下,如果容器可滚动(假设是垂直滚动),则padding-box也算在滚动尺寸之内,IE和firefox浏览器忽略padding-bottom。例如上面的例子,把overflow属性改为auto时,滚动到底部会发现,chrome浏览器下面有10像素的空白,firefox和ie则没有。
