@@ -260,3 +260,307 @@ img {float: left;}
 如果想实现元素裁剪同时四周留有间隙的效果的话,可以试试使用透明边框,此时内间距padding属性是无能无力的。
 
 overflow属性的一个不兼容问题: chrome浏览器下,如果容器可滚动(假设是垂直滚动),则padding-box也算在滚动尺寸之内,IE和firefox浏览器忽略padding-bottom。例如上面的例子,把overflow属性改为auto时,滚动到底部会发现,chrome浏览器下面有10像素的空白,firefox和ie则没有。
+#### 6.6 absolute与overflow
+
+绝对定位元素不总是被父级overflow属性裁剪,尤其是overflow在绝对定位元素及其包括块之间的时候。
+
+如果overflow不是定位元素,同时绝对定位元素和overflow容器之前也没有定位元素,则overflow无法对absolute元素进行裁剪。
+
+下面HTML中的图片不会被裁剪
+```
+<div style="overflow:hidden;">
+    <img src="1.jpg" style="position:absolute;">
+</div>
+```
+
+overflow元素父级是定位元素也不会被裁剪
+```
+<div style="position:relative">
+    <div style="overflow:hidden">  
+        <img src="1.jpg" style="position:absolute;">
+    </div>
+</div>
+```
+
+但是如果overflow属性所在的元素同时也是定位元素,里面的绝对定位元素会被裁剪
+```
+<div style="overflow:hidden;position: relatvie;">
+    <img src="1.jpg" style="position:absolute;"> <!-- 裁剪-->
+</div>
+```
+
+如果overflow元素和绝对定位元素之间有定位元素,也会被裁剪
+```
+<div style="overflow:hidden;">
+    <div style="position:relative;">  
+        <img src="1.jpg" style="position:absolute;"><!-- 裁剪-->
+    </div>
+</div>
+```
+
+如果overflow的属性值不是hidden而是auto或者scroll,即使绝对定位元素高度比overflow元素高度还要大,也都不会出现滚动条。
+```
+<div class="box">
+    <img src="1.jpg">
+</div>
+
+.box{
+    width: 300px; height: 100px;
+    background-color: #f0f3f9;
+    overflow: auto;
+}
+
+.box > img{
+    width: 256px; height: 193px;
+    position: absolute;
+}
+```
+实际开发的时候,绝对定位元素和非绝对定位元素往往看可能混在在一起,虽然绝对定位元素不能让滚动条出现,但是非绝对定位元素可以。于是就可能出现另外一种很有特色的现象。即当容器滚动的时候,绝对定位元素纹丝不动,不跟着滚动,表现类似fixed固定定位。
+http://demo.cssworld.cn/6/5-11.php
+
+由于position:fixed固定定位元素的包含块是根元素,因此除非是窗体滚动,否则上面讨论的所有overflow剪裁规则对固定定位都不适用。
+
+#### 6.7 absolute与clip
+clip属性要想起作用,元素必须是绝对定位或者固定定位,也就是position属性必须是absolute或者fixed.
+```
+clip: rect(top right bottom left)
+```
+这里的4个值不能缩写,且和border-width类似,不支持百分比值。
+```
+clip: rect(30px 200px 200px 200px)
+```
+可以想象手中有一把剪刀,面前有一块画布,上述css代码表示的含义是: 距离画布上边缘30px的地方剪一刀,距离画布右边缘200px的地方剪一刀,距离画布下边缘200px的地方剪一刀,距离画布左边缘20px的地方剪一刀。
+
+##### 6.7.1 重新认识clip属性
+1. fixed固定定位的裁剪
+
+对于普通元素或者绝对定位元素,想要对其进行裁剪,可以利用语义更明显的overflow属性,但是对于position:fixed元素,因为fixed固定定位元素的包含块是根元素,除非是根元素滚动条,普通元素的overflow是根本无法对其进行裁剪的。此时就要用到clip属性
+```
+.fixed-clip{
+    position: fixed;
+    clip: rect(30px 200px 200px 200px);
+}
+```
+
+2. 最佳可访问性隐藏
+
+举个例子,很多网站左上角都有包含自己网站名称的标识(logo) 而这些标识一般都是图片,为了更好地SEO以及无障碍识别, 一般会使用h1标签写上网站的名称。
+```
+<a href="/" class="logo">
+    <h1>CSS世界</h1>
+</a>
+```
+
+如何隐藏h1标签中的"CSS世界"这几个文字,通常有以下一些技术选型
+- 下策是display: none或者visibility: hidden隐藏, 因为屏幕阅读设备会忽略这里的文字
+- text-indent缩进是中策,但文字如果缩进过大,大到屏幕之外,屏幕阅读设备也是不会读取的
+- color: transparent是移动端上策,但却是桌面端中策,因为原生IE8浏览器并不支持它。color:transparent声明,很难用简单的方式阻止文本被框选中。
+- clip剪裁隐藏式上策,既满足视觉上的隐藏,屏幕阅读设备等辅助设备也支持得很好
+```
+.logo h1{
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+```
+
+clip裁剪被称为"最佳可访问性隐藏"。任何元素 任何场景都可以无障碍使用。哪里需要"可访问性隐藏"就加一个类名.clip即可。
+```
+.clip{
+    position: absolute;
+    clip: rect(0 0 0 0 )
+}
+```
+
+##### 6.7.2 深入了解clip的渲染
+```
+.box{
+    width: 300px; height: 100px;
+    background-color: #f0f3f9;
+    position: relative;
+    overflow: auto;
+}
+.box > img {
+    width: 256px; height: 192px;
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+```
+图片显然看不见了,但是在chrome浏览器下,.box元素的滚动条依旧存在。在IE和Firefox浏览器下是没有滚动条的。这又是"未定义行为"的表现。
+
+使用clip进行裁剪的元素其clientWidth和clientHeight包括样式计算的宽高都还是原来的大小。clip仅仅是决定了哪一部分是可见的,对于原来占据的空间并无影响。非可见部分无法影响点击事件等; 然后,虽然视觉上隐藏,但是元素的尺寸依然是原来的尺寸。
+#### 6.8 absolute的流体特性
+##### 6.8.1 当absolute遇到left/top/right/bottom属性
+当absolute遇到left/top/right/bottom属性的时候,absolute元素才真正变成绝对定位元素。
+```
+.box{
+    position: absolute;
+    left: 0; right:; 0;
+}
+```
+表示相对于绝对定位元素包含块的左上角对齐,此时原本的相对特性丢失.但是如果仅仅设置了一个方向的绝对定位,另一个方向依然保持相对特性。
+
+##### 6.8.2 absolute的流体特性
+绝对定位元素也就有流体特性,当然不是默认就有的,而是在"对立方向同时发生定位的时候"这一特定条件下。
+
+当一个绝对定位元素,其对立定位方向属性同时有具体定位数值的时候,流体特性就发生了。
+```
+<div class="box"></div>
+.box{
+    position: absolute;
+    left: 0; right: 0;
+}
+```
+如果只有left属性或者只有right属性,则由于包裹性,此时.box宽度是0。但是left和right同时存在,所以宽度就不是0,而是表现为"格式化宽度",宽度大小自适应于.box包含块的padding box,也就是如果包含块padding box宽度发生变化,box的宽度也会随着一起变。
+
+因此假设.box元素的包含块石根元素,则下面的代码可以让.box元素正好完全覆盖浏览器的可视窗口,并且如果改变浏览器窗口大小, .box会自动跟着一起变化。
+```
+.box{
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+}
+```
+
+设置了对立定位属性的绝对定位元素的表现神似普通的div元素,无论设置padding还是margin,其占据的空间一直不变,变化的就是content box的尺寸,这就是典型的流体表现特性。
+
+绝对定位元素这种流体特性比普通元素要更强大,普通元素流体特性只有一个方向,默认是水平方向,但是绝对定位元素可以让垂直方向和水平方向同时保持流动性。
+##### 6.8.3 absolute的margin:auto剧中
+当绝对定位元素处于流体状态的时候,各个盒模型相关属性的解析和普通流体元素都是一模一样的。margin负值可以让元素的尺寸变大,并且可以使用margin:auto让绝对定位元素保持居中。
+
+绝对定位元素的margin:auto的填充规则和普通流体元素的一模一样:
+- 如果一侧定值,一侧auto,auto为剩余空间大小
+- 如果两侧均是auto,则平分剩余空间
+
+唯一区别是绝对定位元素的margin:auto居中是从IE8浏览器开始支持的,而普通元素的margin:auto居中很早就支持了。
+
+如果绝对定位元素的尺寸是已知的,利用绝对定位元素的流体特性和margin:auto的自动分配特性实现居中
+```
+.element{
+    width: 300px; height: 200px;
+    position: absolute;
+    left:0; right:0; top:0; bottom:0;
+    margin:auto;
+}
+```
+没有必要使用如下方法
+```
+.elemenet{
+    width: 300px; height: 200px;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%); /* 50%为自身尺寸的一半 */
+}
+
+.element{
+    width: 300px; height: 200px;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    margin-left: -150px;
+    mergin-top: -100px;
+}
+```
+
+
+#### 6.9 position:relative
+##### 6.9.1 relative对absolute的限制
+虽然relative/absolute/fixed都能对absolute的"包裹性"以及"定位"产生限制,但只有relative可以让元素依然保持在正常的文档流中。
+```
+.box{
+    position: absolute;
+    left: 0; right: 0;top: 0;bottom: 0;
+}
+.icon{
+    width: 20px; height: 20px;
+    position: relative;
+}
+<div class="icon">
+    <div class="box"></div>
+</div>
+```
+此时.box尺寸被限制到20px`*`20px
+##### 6.9.2 relative与定位
+relative的定位有两大特性 一是相对自身 二是无侵入。
+http://demo.cssworld.cn/6/6-1.php
+
+relative的定位还有两点值得一提: 相对定位元素的left/top/right/bottom的百分比值是相对于包含块计算的,而不是自身,虽然定位位移是相对自身。
+
+top和bottom这两个垂直方向的百分比值计算跟height的百分比值是一样的,都是相对于高度计算的。同时如果包含块的高度是auto,那么计算值是0,偏移无效,也就是说如果父元素没有设定高度或者不是格式化高度,那么relative类似top:20%的代码等同于top:0
+
+当相对定位元素同时应用对立方向定位值的时候,也就是top/bottom和left/right同时使用的时候,其表现和绝对定位差异很大,绝对定位是尺寸拉伸,保持流体特性,但是相对定位只有一个方向的定位属性会起作用。哪个方向的属性起作用与文档流的顺序有关。默认的文档流是自上而下,从左往右,因此top/bottom同时使用的时候,top生效,left/right同时使用的时候,left生效。
+
+##### 6.9.3 relative的最小化影响原则
+relative的最小化影响原则:
+
+(1)尽量不使用relative, 如果想定位某些元素,看看能否使用"无依赖的绝对定位"
+
+(2)如果一定要使用relative,则该relatvie务必最小化。
+#### 6.10 position:fixed
+##### 6.10.1 position:fixed不一样的"包含块"
+position:fixed固定定位元素的"包含块"是根元素,我们可以将其近似看成html元素。换句话说,唯一可以限制固定定位元素的就是html元素。
+
+和"无依赖的绝对定位"类似,就是"无依赖的固定定位",利用absolute/fixed元素没有设置left/top/right/bottom的相对定位特性,可以将目标元素定位到想到的位置。
+```
+<div class="father">
+    <div class="right">
+        &nbsp;<div class="son"></div>
+    </div>
+</div>
+
+.father{
+    width: 300px; height: 200px;
+    position: relative;
+}
+.right{
+    height: 0;
+    text-align: right;
+    overflow: hidden;
+}
+.son{
+    display: inline;
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    margin-left: -40px;
+}
+```
+##### 6.10.2 position:fixed的absolute模拟
+```
+<body>
+    <div class="page">固定定位元素</div>
+    <div class="fixed"></div>
+</body>
+html,body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page {
+    height: 100%;
+    overflow: auto;
+}
+
+.fixed {
+    position: absolute;
+}
+```
+整个页面的滚动条由.page元素产生,而非根元素,此时.fixed元素虽然是绝对定位,但是并不在滚动元素内部,自然滚动时不会跟随,如同固定定位效果,同时本身绝对定位。因此可以使用relative进行限制或者overflow进行裁剪等。
+
+##### 6.10.3 position:fixed与背景锁定
+背景锁定时,如果是移动端项目,阻止touchmove事件的默认行为可以防止滚动;如果是桌面端项目,可以让根元素直接overflow:hidden。但是windows操作系统下的浏览器的滚动条都是占据一定宽带的,滚动条的消失必然会导致页面的可用宽带变化,页面会产生晃动问题。可以使用border属性填补消失的滚动条。
+
+蒙层显示的同时执行下面的代码
+```
+var widthBar = 17,root = document.documentElement;
+if(typeof window.innerWidth = 'number'){
+    widthBar = window.innerWidth - root.clientWidth;
+}
+root.style.overflow = 'hidden';
+root.style.borderRight = widthBar + 'px solid transparent';
+```
+隐藏的时候执行下面的代码
+```
+var root = document.documentElement;
+root.style.overflow = '';
+root.style.borderRight = '';
+```
