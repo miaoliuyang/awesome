@@ -1,3 +1,43 @@
+##### 8.6.4 word-break和word-wrap区别
+1.word-break属性语法如下:
+- normal: 使用默认的换行规则
+- break-all: 允许任意非CJK(Chinese/Japanese/Korean)文本间的单词断行
+- keep-all: 不允许CJK文本中的单词换行, 只能在半角空格或连字符处换行。非CJK文本的行文实际上和normal一致。
+
+break-all这个值是所有浏览器都支持, 但是keep-all就不同了, 目前移动端还不适合使用keep-all。
+
+另外Chrome, Safari以及其他WebKit或Blink浏览器还支持非官方标准的break-word。其表现就和word-wrap:break-word一样
+
+2.word-wrap属性语法如下:
+- normal: 正常的换行规则
+- break-word: 一行单词中实在没有其他靠谱的换行点的时候换行。在CSS3规范中, 这个属性名称被修改为overflow-wrap, 但还不是所有浏览器支持。
+
+word-break:break-all和word-wrap:break-word都能使连续英文字符换行, 但是区别可看 http://demo.cssworld.cn/8/6-5.php 效果。
+
+word-break:break-all的作用是所有的都换行, 一点儿空隙都不放过,而word-wrap:break-word则带有怜悯之心, 如果这一行文字有可以换行的点, 如空格或CJK之类的, 就不打英文单词或字符的主意了, 在这些换行点换行, 至于对不对齐, 好不好看则不关心, 因此很容易出现一片一片空白区域的情况。
+
+##### 8.6.5 white-space与换行和空格的控制
+1.white-space的处理模型
+white-space属性声明了如何处理元素内的空白字符, 这类空白字符包括space(空格)键, enter(回车)键, tab(制表符)键产生的空白。因为white-space可以决定图文内容是否在一行显示(回车空格是否生效),是否显示大段连续空白(空格是否生效)等。
+
+- normal: 合并空白字符和换行符
+- pre: 空白字符不合并, 并且内容只在有换行符的地方换行
+- nowrap: 该值和normal也一样会合并空白字符, 但不允许文本环绕
+- pre-wrap: 空白字符不合并,并且内容只会在换行符的地方换行, 同事允许文本环绕
+- pre-line: 合并空白字符,但只在换行符的地方换行, 允许文本环绕
+
+white-space的功能分三个维度,分别是: 是否合并空白字符, 是否合并换行符, 以及文本是否自动换行。
+
+| 属性 | 换行 | 空格和制表 | 文本环绕 |
+| ------ | ------ | ------ |------ |
+| normal | 合并 | 合并 | 环绕 |
+| nowrap | 合并 | 合并 | 不环绕 |
+| pre | 保留 | 保留 | 不环绕 |
+| pre-wrap | 保留 | 保留 | 环绕 |
+| pre-line | 合并 | 合并 | 环绕 |
+
+如果合并空格, 会让多个空格变成1个。如果合并换行, 会把多个连续换行合并成1个, 并当做1个普通空格处理,就是空格键敲出的那个空格。如果文本环绕,一行文字内容超出容器宽度时,会自动从下一行开始显示。
+
 ##### 8.6.7 解决text-decoration下划线和文本重叠问题
 
 使用border-bottom模拟下划线

@@ -18,7 +18,7 @@
 #### 7.3 层叠顺序(stacking order)
 层叠顺序表示元素发生层叠时的特定垂直显示顺序。在CSS2.1的年代,在CSS3新世界还没到来的时候,层叠顺序规则如下：
 
-层叠上下文background/color -> 复z-index -> block块状水平盒子 -> float浮动盒子 -> inline水平盒子 -> z-index:auto或z-index:0 -> 正z-index
+层叠上下文background/color -> 复z-index -> block块状水平盒子 -> float浮动盒子 -> inline水平盒子 -> z-index:auto或z-index:0 不依赖z-index的层叠上下文 -> 正z-index
 
 (1)位于最下面的background/color特指层叠上下文元素的边框和背景色。每一个层叠规则顺序仅适用于当前层叠上下文元素的小世界。
 
@@ -76,4 +76,7 @@ http://demo.cssworld.cn/7/5-1.php
 
 (8)元素的-webkit-overflow-scrolling设为touch
 
+##### 7.5.3 层叠上下文与层叠顺序
+
+一旦普通元素具有了层叠上下文,其层叠顺序就会变高。
 
