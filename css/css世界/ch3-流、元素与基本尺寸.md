@@ -11,6 +11,8 @@
     clear:both
 }
 ```
+对于IE浏览器, 普通元素设置dispaly:list-item有效, 但是:before/:after等伪元素不行。
+
 4.每个元素都有两个盒子,外在盒子和容器盒子。外在盒子负责元素是可以一行显示, 还是只能换行显示; 容器盒子负责宽高, 内容呈现等。于是, 值为block的元素的盒子实际由外在的"块级盒子"和内在的"块级容器盒子"组成, 值为inline-block的元素则由外在的"内联盒子"和内在的"块级容器盒子"组成, 值为inline的元素则内外均是"内联盒子"。inline-table示例 https://demo.cssworld.cn/3/1-2.php
 
 5.list-item还会生成一个"标记盒子"(marker box)
